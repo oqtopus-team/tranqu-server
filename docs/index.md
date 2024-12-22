@@ -21,9 +21,8 @@ The current version supports a gRPC server, and we plan to include RESTful API s
 
 ## Usage
 
-- [Getting Started](./usage/getting_started.ipynb)
-- [How It Works](./usage/how_it_works.ipynb)
-- [Using Custom Transpilers and Converters](./usage/custom.ipynb)
+- [Getting Started](./usage/getting_started.md)
+- [Interface Specifications](./usage/interface_specifications.md)
 
 ## API reference
 
