@@ -13,15 +13,29 @@ Tranqu Server is a service application built with Tranqu designed to provide tra
 
 The current version supports a gRPC server, and we plan to include RESTful API support and additional features.
 
-![Tranqu Server](./docs/asset/overview.png)
+![Tranqu Server](./asset/overview.png)
 
 ## Features
 
 - **gRPC Server**: Provides Tranqu as a gRPC server service.
 
-## Documentation
+## Usage
 
-- [Documentation Home](https://tranqu-server.readthedocs.io/)
+- [Getting Started](./usage/getting_started.ipynb)
+- [How It Works](./usage/how_it_works.ipynb)
+- [Using Custom Transpilers and Converters](./usage/custom.ipynb)
+
+## API reference
+
+- [API reference](./reference/API_reference.md)
+
+## Developer Guidelines
+
+- [Development Flow](./developer_guidelines/index.md)
+- [Setup Development Environment](./developer_guidelines/setup.md)
+- [How to Contribute](./CONTRIBUTING.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Security](./SECURITY.md)
 
 ## Citation
 
@@ -40,3 +54,8 @@ You can contact us by creating an issue in this repository or by email:
 ## License
 
 Tranqu Server is released under the [Apache License 2.0](https://github.com/oqtopus-team/tranqu-server/blob/main/LICENSE).
+
+## Supporting
+
+This work was supported by JST COI-NEXT, Grant No. JPMJPF2014.
+A part of this work was performed for Council for Science, Technology and Innovation (CSTI), Cross-ministerial Strategic Innovation Promotion Program (SIP), ‘Building and operation of a domestically developed quantum computer testbed environment’ (funding agency: QST).

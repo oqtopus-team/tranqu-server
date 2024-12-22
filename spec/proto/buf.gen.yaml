@@ -1,0 +1,10 @@
+version: v2
+managed:
+  enabled: true
+plugins:
+  - remote: buf.build/grpc/python:v1.68.1 # generate server stub
+    out: ../../src
+  - remote: buf.build/protocolbuffers/python:v29.0
+    out: ../../src
+inputs:
+  - directory: .
