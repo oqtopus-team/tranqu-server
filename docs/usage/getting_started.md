@@ -7,7 +7,7 @@ Before you start the installation of Tranqu Server, you need to install the foll
 ### Development Environment
 
 | Tool                                        | Version | Description                        |
-|---------------------------------------------|---------|------------------------------------|
+| ------------------------------------------- | ------- | ---------------------------------- |
 | [Python](https://www.python.org/downloads/) | >=3.12  | Python programming language        |
 | [uv](https://docs.astral.sh/uv/)            | -       | Python package and project manager |
 
@@ -66,4 +66,46 @@ A sample client can call the Tranqu Server to try it out and check its functiona
 
 ```bash
 uv run python tests/tranqu_server/proto/sample_client.py
+```
+
+## Example
+
+You can check Tranqu Server's with grpcurl:
+
+### Install grpcurl
+
+#### macOS
+
+```shell
+go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+```
+
+#### From source
+
+```shell
+go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+```
+
+See the [grpcurl repository](https://github.com/fullstorydev/grpcurl)
+
+### List services
+
+```shell
+grpcurl -plaintext localhost:50051 list
+```
+
+### Check supported methods
+
+```shell
+grpcurl -plaintext "[::]:50051" list tranqu_server.proto.v1.TranspilerService
+```
+
+### Request to transpile
+
+```shell
+grpcurl -plaintext -d '{
+  "program": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[2] q;\n\nh q[0];\ncx q[0], q[1];\n",
+  "program_lib": "openqasm3",
+  "transpiler_lib": "qiskit"
+}' "[::]:50051" tranqu_server.proto.v1.TranspilerService.Transpile
 ```
