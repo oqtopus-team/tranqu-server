@@ -9,6 +9,7 @@ from typing import Any
 
 import grpc  # type: ignore[import-untyped]
 import yaml
+from grpc_reflection.v1alpha import reflection  # type: ignore[import-untyped]
 from tranqu import Tranqu  # type: ignore[import-untyped]
 
 from tranqu_server.proto.v1 import tranqu_pb2, tranqu_pb2_grpc
@@ -184,6 +185,11 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
     tranqu_pb2_grpc.add_TranspilerServiceServicer_to_server(
         TranspilerServiceImpl(), server
     )
+    service_names = (
+        tranqu_pb2.DESCRIPTOR.services_by_name["TranspilerService"].full_name,
+        reflection.SERVICE_NAME,
+    )
+    reflection.enable_server_reflection(service_names, server)
     server.add_insecure_port(address)
     logger.info("Server is running on %s. max_workers=%d", address, max_workers)
 
