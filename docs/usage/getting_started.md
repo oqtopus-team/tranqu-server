@@ -74,24 +74,12 @@ You can check Tranqu Server's with grpcurl:
 
 ### Install grpcurl
 
-#### macOS
-
-```shell
-go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
-```
-
-#### From source
-
-```shell
-go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
-```
-
 See the [grpcurl repository](https://github.com/fullstorydev/grpcurl)
 
 ### List services
 
 ```shell
-grpcurl -plaintext localhost:50051 list
+grpcurl -plaintext [::]:50051 list
 ```
 
 ### Check supported methods
