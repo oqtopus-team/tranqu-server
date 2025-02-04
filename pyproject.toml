@@ -1,6 +1,6 @@
 [project]
 name = "tranqu-server"
-version = "0.1.0"
+version = "0.1.1"
 description = "Tranqu Server: A transpiler service application using Tranqu"
 readme = "README.md"
 license = "Apache-2.0"
@@ -24,7 +24,7 @@ dependencies = [
   "grpcio>=1.68.1",
   "protobuf>=5.29.1",
   "python-json-logger>=3.2.1",
-  "tranqu>=0.1.1",
+  "tranqu>=0.3.0",
 ]
 
 [project.urls]
