@@ -49,6 +49,12 @@ This is the logging configuration file for Tranqu Server.
 It is written in YAML format.
 Within Tranqu Server, it is loaded as a `dict`, and then the [logging.config.dictConfig function](https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig) is called to apply the configuration.
 
+If you use the default settings of `config.yaml`, the `logs` directory is required.
+
+```shell
+mkdir logs
+```
+
 ## Start Tranqu Server
 
 To start Tranqu Server, run the following command:
