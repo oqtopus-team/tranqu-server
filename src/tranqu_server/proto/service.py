@@ -58,6 +58,18 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
             start_time = time.time()
             request_id = request.request_id
             logger.info("Transpile is started.", extra={"request_id": request_id})
+            logger.debug(
+                "received parameter",
+                extra={
+                    "request_id": request_id,
+                    "program": request.program,
+                    "program_lib": request.program_lib,
+                    "transpiler_lib": request.transpiler_lib,
+                    "transpiler_options": request.transpiler_options,
+                    "device": request.device,
+                    "device_lib": request.device_lib,
+                },
+            )
 
             # call Tranqu
             result = self._tranqu.transpile(
