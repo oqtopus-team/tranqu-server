@@ -37,7 +37,7 @@ transpiler_options = json.dumps({
 
 
 oqtopus_device = json.dumps({
-    "name": "fake_device",
+    "device_id": "fake_device",
     "qubits": [
         {
             "id": 0,
