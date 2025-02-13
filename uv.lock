@@ -1997,7 +1997,7 @@ wheels = [
 
 [[package]]
 name = "tranqu"
-version = "0.3.0"
+version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ouqu-tp" },
@@ -2006,9 +2006,9 @@ dependencies = [
     { name = "qiskit" },
     { name = "qiskit-qasm3-import" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b6/d2/749827e9bc6f759f912878009c60689d21e0a76b218a4b2373be781d0a01/tranqu-0.3.0.tar.gz", hash = "sha256:5328238276d7e1ee154bfc4aa7dcad1abd28e11533a47e802bd036aee548a4ae", size = 258010 }
+sdist = { url = "https://files.pythonhosted.org/packages/25/b4/829468bff42ed21b484363ca8eced786a43abcd28b13d4568020433bdcdf/tranqu-0.3.1.tar.gz", hash = "sha256:831f087f70ffa531fffb4339db33f3a538fae51993419602e75cf36439b2c0f7", size = 259262 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2c/a2/851680b2f0afae5d72bfa99ce2925807b61a392f44407ecafdce0296012a/tranqu-0.3.0-py3-none-any.whl", hash = "sha256:64873bd984e93953d2d51bf5219c86079ec05007b63cccecf75fc7ba78671b4b", size = 33960 },
+    { url = "https://files.pythonhosted.org/packages/22/9a/86c4637603dd0bea39fecadbd6582422f2607de50c4dda3606ffa3650fba/tranqu-0.3.1-py3-none-any.whl", hash = "sha256:9be3afb6d9ad907d0768fdab772a5ae60f83ace8109f5d45a2c0f60afa80339c", size = 34450 },
 ]
 
 [[package]]
@@ -2050,7 +2050,7 @@ requires-dist = [
     { name = "grpcio-reflection", specifier = ">=1.68.1" },
     { name = "protobuf", specifier = ">=5.29.1" },
     { name = "python-json-logger", specifier = ">=3.2.1" },
-    { name = "tranqu", specifier = ">=0.3.0" },
+    { name = "tranqu", specifier = ">=0.3.1" },
 ]
 
 [package.metadata.requires-dev]
