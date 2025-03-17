@@ -1,6 +1,6 @@
 [project]
 name = "tranqu-server"
-version = "0.1.1"
+version = "1.0.0"
 description = "Tranqu Server: A transpiler service application using Tranqu"
 readme = "README.md"
 license = "Apache-2.0"
