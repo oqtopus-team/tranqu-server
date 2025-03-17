@@ -44,6 +44,7 @@ dev-dependencies = [
   "pymdown-extensions>=10.12",
   "pytest>=8.3.4",
   "pytest-cov>=6.0.0",
+  "pytest-mock>=3.14.0",
   "ruff>=0.8.2",
   "types-colorama>=0.4.15.20240311",
   "types-protobuf>=5.28.3.20241203",

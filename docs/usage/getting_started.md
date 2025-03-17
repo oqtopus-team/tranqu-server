@@ -39,6 +39,9 @@ Tranqu Server uses two configuration files:
 - [config.yaml](#configyaml)
 - [logging.yaml](#loggingyaml)
 
+!!! info
+    You can use environment variables as values in the above YAML files.
+
 ### config.yaml
 
 This is the main configuration file for Tranqu Server.
@@ -71,6 +74,14 @@ uv run python src/tranqu_server/proto/service.py -c config/config.yaml -l config
 
 - `-c` or `--config`: Specifies the path to the main configuration file.
 - `-l` or `--logging`: Specifies the path to the logging configuration file.
+
+When cloned from GitHub, the `worker` in `config.yaml` uses the environment variable `${WORKERS}`,
+and the `address` uses the environment variable `${ADDRESS}`.
+In this case, the Tranqu Server is started with the following command.
+
+```shell
+WORKERS=10 ADDRESS="localhost:50051" uv run python src/tranqu_server/proto/service.py -c config/config.yaml -l config/logging.yaml
+```
 
 ## Run sample client
 
