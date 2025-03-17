@@ -18,6 +18,12 @@ git clone https://github.com/oqtopus-team/tranqu-server.git
 cd tranqu-server
 ```
 
+!!! info
+    To use [ouqu-tp](https://github.com/Qulacs-Osaka/ouqu-tp) as a transpiler,
+    [staq](https://github.com/softwareQinc/staq/blob/main/INSTALL.md) is required.
+    If staq is not installed, it will be automatically installed the first time you use ouqu-tp.
+    The installation of staq takes several minutes.
+
 ### Setting Up the Python Environment
 
 To install dependencies:
