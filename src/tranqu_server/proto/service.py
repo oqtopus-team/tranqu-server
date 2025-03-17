@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import logging.config
+import os
 import time
 from concurrent import futures
 from pathlib import Path
@@ -178,6 +179,26 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def assign_environ(config: dict) -> dict:
+    """Expand environment variables and the user directory "~" in the values of `dict`.
+
+    Args:
+        config (dict): `dict` that expands environment variables
+            and the user directory "~" in its values.
+
+    Returns:
+        dict: expanded `dict`.
+
+    """
+    for key, value in config.items():
+        if type(value) is dict:
+            config[key] = assign_environ(value)
+        elif type(value) is str:
+            tmp_value = str(os.path.expandvars(value))
+            config[key] = os.path.expanduser(tmp_value)  # noqa: PTH111
+    return config
+
+
 def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
     """Start the gRPC server with the specified configuration and logging settings.
 
@@ -194,13 +215,13 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
 
     """
     with Path(config_yaml_path).open("r", encoding="utf-8") as file:
-        config_yaml = yaml.safe_load(file)
+        config_yaml = assign_environ(yaml.safe_load(file))
     with Path(logging_yaml_path).open("r", encoding="utf-8") as file:
-        logging_yaml = yaml.safe_load(file)
+        logging_yaml = assign_environ(yaml.safe_load(file))
         logging.config.dictConfig(logging_yaml)
 
-    max_workers = config_yaml["proto"].get("max_workers", 10)
-    address = config_yaml["proto"].get("address", "[::]:50051")
+    max_workers = int(config_yaml["proto"].get("max_workers") or 10)
+    address = str(config_yaml["proto"].get("address") or "[::]:50051")
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers))
     tranqu_pb2_grpc.add_TranspilerServiceServicer_to_server(
