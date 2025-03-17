@@ -59,7 +59,7 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
             request_id = request.request_id
             logger.info("Transpile is started.", extra={"request_id": request_id})
             logger.debug(
-                "received parameter",
+                "received parameters",
                 extra={
                     "request_id": request_id,
                     "program": request.program,
@@ -97,6 +97,15 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
             response = tranqu_pb2.TranspileResponse(status=1)  # type: ignore[attr-defined]
         finally:
             elapsed_time = time.time() - start_time
+            logger.debug(
+                "return parameters",
+                extra={
+                    "request_id": request_id,
+                    "transpiled_program": response.transpiled_program,
+                    "stats": response.stats,
+                    "virtual_physical_mapping": response.virtual_physical_mapping,
+                },
+            )
             logger.info(
                 "Transpile is finished.",
                 extra={
