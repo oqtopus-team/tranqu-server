@@ -5,6 +5,7 @@
 [![CI](https://github.com/oqtopus-team/tranqu-server/actions/workflows/ci.yaml/badge.svg)](https://github.com/oqtopus-team/tranqu-server/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/oqtopus-team/tranqu-server/graph/badge.svg?token=RCXTMMXOMV)](https://codecov.io/gh/oqtopus-team/tranqu-server)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![slack](https://img.shields.io/badge/slack-OQTOPUS-pink.svg?logo=slack&style=plastic")](https://oqtopus.slack.com/archives/C08KB2M66SD)
 
 ## Overview
 
