@@ -3,6 +3,7 @@ import json
 import logging
 import logging.config
 import os
+import threading
 import time
 from concurrent import futures
 from pathlib import Path
@@ -16,6 +17,7 @@ from tranqu import Tranqu  # type: ignore[import-untyped]
 from tranqu_server.proto.v1 import tranqu_pb2, tranqu_pb2_grpc
 
 logger = logging.getLogger("tranqu_server")
+_transpiler_lock = threading.Lock()
 
 
 class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
@@ -73,14 +75,16 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
             )
 
             # call Tranqu
-            result = self._tranqu.transpile(
-                program=parse_str(request.program),
-                program_lib=parse_str(request.program_lib),
-                transpiler_lib=parse_str(request.transpiler_lib),
-                transpiler_options=parse_json(request.transpiler_options),
-                device=parse_json(request.device),
-                device_lib=parse_str(request.device_lib),
-            )
+            with _transpiler_lock:
+                # Ensure that only one transpilation occurs at a time
+                result = self._tranqu.transpile(
+                    program=parse_str(request.program),
+                    program_lib=parse_str(request.program_lib),
+                    transpiler_lib=parse_str(request.transpiler_lib),
+                    transpiler_options=parse_json(request.transpiler_options),
+                    device=parse_json(request.device),
+                    device_lib=parse_str(request.device_lib),
+                )
 
             response = tranqu_pb2.TranspileResponse(  # type: ignore[attr-defined]
                 status=0,
