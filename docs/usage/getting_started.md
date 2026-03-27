@@ -49,7 +49,7 @@ This is the main configuration file for Tranqu Server.
 ```yaml
 proto: # Settings for Tranqu Server as a gRPC server
   max_workers: ${WORKERS, 10} # Maximum number of workers (default: 10)
-  address: "${ADDRESS, localhost:52020}" # Address and port for RPCs (default: localhost:52020)
+  address: ${ADDRESS, "localhost:52020"} # Address and port for RPCs (default: localhost:52020)
 ```
 
 ### logging.yaml
