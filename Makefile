@@ -2,7 +2,7 @@ SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DEFAULT_GOAL := help
 
-.PHONY: install run format lint test verify docs-lint docs-build docs-serve grpcurl-list help
+.PHONY: install run format lint test verify docs-lint docs-build docs-serve grpcurl-list grpcurl-test help
 
 install: ## Install dependencies and configure git commit template
 	@uv sync --all-groups
@@ -39,6 +39,10 @@ docs-serve: ## Serve documentation locally
 
 grpcurl-list: ## List gRPC services via grpcurl
 	@grpcurl -plaintext localhost:52020 list
+
+grpcurl-test: ## Run a transpile test using grpcurl
+	@grpcurl -plaintext -d '{"program": "OPENQASM 3.0; include \"stdgates.inc\"; qubit[2] q; h q[0]; cx q[0], q[1];", "program_lib": "openqasm3", "transpiler_lib": "qiskit"}' \
+		"localhost:52020" tranqu_server.proto.v1.TranspilerService.Transpile
 
 help: ## Show this help message
 	@echo "Usage: make [target]"
