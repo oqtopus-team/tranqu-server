@@ -1,83 +1,128 @@
 
 # Development Environment Setup
 
+This guide explains how to set up the development environment for contributing to Tranqu Server.  
+The project provides a **Makefile** to simplify common development tasks.
+
 ## Prerequisites
 
-Before starting development, you need to install the following tools:
+Install the following tools before starting development.
 
-### Development Environment
+| Tool                                            | Version | Description                                                                                   |
+| ----------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| [Python](https://www.python.org/downloads/)     | >=3.12  | Python programming language                                                                   |
+| [uv](https://docs.astral.sh/uv/)                | >=0.6   | Python package and project manager                                                            |
+| [Buf CLI](https://buf.build/docs/installation/) | -       | Developer tool that enables building and management of Protobuf APIs through the command line |
 
-| Tool                                            | Version | Description                        |
-|-------------------------------------------------|---------|------------------------------------|
-| [Python](https://www.python.org/downloads/)     | >=3.12  | Python programming language        |
-| [uv](https://docs.astral.sh/uv/)                | -       | Python package and project manager |
-| [Buf CLI](https://buf.build/docs/installation/) | -       | developer tool that enables building and management of Protobuf APIs through the command line |
-
-To start development, clone the repository:
+Clone the repository:
 
 ```shell
 git clone https://github.com/oqtopus-team/tranqu-server.git
 cd tranqu-server
 ```
 
-### Setting Up the Python Environment
+## Project Structure
 
-To install dependencies:
+The repository is organized as follows:
 
-```shell
-uv sync
+```text
+tranqu-server/
+├─ src/           # Python package source code
+├─ tests/         # Test suite
+├─ docs/          # Documentation sources (MkDocs)
+├─ config/        # Example configuration files
+├─ spec/          # Protobuf definitions
+├─ logs/          # Log output directory
+├─ .github/       # GitHub workflows and repository settings
+├─ pyproject.toml # Project configuration and dependencies
+├─ Makefile       # Development commands
+├─ mkdocs.yml     # MkDocs configuration
+├─ uv.lock        # Locked dependency versions
+└─ README.md      # Project overview
 ```
 
-## Generate Python codes from *.proto file
+## Installing Dependencies
 
-If you modify a `*.proto file`, run the following commands to generate the gRPC-related codes.
+Install the project dependencies and set up the local development environment:
+
+```shell
+make install
+```
+
+This command performs the following:
+
+- Installs all dependencies via `uv`.
+- Configures the Git commit message template.
+
+## Generate Python Codes from \*.proto Files
+
+If you modify a `*.proto` file, run the following commands to generate the gRPC-related codes.
 
 ```shell
 cd spec/proto
 make all
 ```
 
-## Lint and test
+## Linting and Testing
 
-### How to Format Code
+### Format Code
 
-To format the code, run the following command:
-
-```shell
-uv run ruff format
-```
-
-### How to Lint Code
-
-To check the types, run the following command:
+Format the code:
 
 ```shell
-uv run ruff check
+make format
 ```
 
-### How to Check Types
+### Lint Code
 
-To check the types, run the following command:
+Run linting and static type checking:
 
 ```shell
-uv run mypy
+make lint
 ```
 
-### How to Test Code
+### Run Tests
 
-To test the code, run the following command:
+Run the test suite:
 
 ```shell
-uv run pytest
+make test
 ```
 
-## Starting the Documentation Server
+### Verify Code
 
-We are using [MkDocs](https://www.mkdocs.org/) to generate the HTML documentation and [mkdocstrings-python](https://mkdocstrings.github.io/python/) to generate the Python API reference.
-To start the documentation server, run the following command:
+Run all verification steps (formatting, linting, and tests):
 
 ```shell
-uv run mkdocs serve
+make verify
 ```
 
-Then, check the documentation at [http://localhost:8000](http://localhost:8000).
+## Documentation
+
+### Lint Documentation
+
+Run documentation linting:
+
+```shell
+make docs-lint
+```
+
+### Build Documentation
+
+Build the documentation:
+
+```shell
+make docs-build
+```
+
+### Start the Documentation Server
+
+This project uses [MkDocs](https://www.mkdocs.org/) to generate the HTML documentation and
+[mkdocstrings-python](https://mkdocstrings.github.io/python/) to generate the Python API reference.  
+Start the documentation server with:
+
+```shell
+make docs-serve
+```
+
+Open the documentation in your browser at [http://localhost:8000](http://localhost:8000).

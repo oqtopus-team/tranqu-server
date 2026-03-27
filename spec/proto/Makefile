@@ -2,21 +2,19 @@ SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DEFAULT_GOAL := help
 
-.PHONY: all
-all: lint generate
+.PHONY: all lint generate help
 
-.PHONY: lint
-lint:
+all: lint generate ## Run lint and generate
+
+lint: ## Run buf lint
 	buf lint
 
-.PHONY: generate
-generate:
+generate: ## Run buf generate
 	buf generate
 
-.PHONY: help
-help:
+help: ## Show this help message
+	@echo "Usage: make [target]"
+	@echo ""
 	@echo "Available targets:"
-	@echo "  all        - Run lint and generate"
-	@echo "  lint       - Run buf lint"
-	@echo "  generate   - Run buf generate"
-	@echo "  help       - Show this help message"
+	@echo ""
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(filter-out .env,$(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
