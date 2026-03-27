@@ -11,7 +11,7 @@ install: ## Install dependencies and configure git commit template
 	fi
 
 run: ## Run Tranqu Server
-	@uv run python src/tranqu_server/proto/service.py
+	@uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 
 format: ## Format code
 	@uv run ruff check --fix

@@ -69,7 +69,7 @@ mkdir logs
 To start Tranqu Server, run the following command:
 
 ```shell
-uv run python src/tranqu_server/proto/service.py
+uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 ```
 
 - `-c` or `--config`: Specifies the path to the main configuration file (default: `config/config.yaml`).
@@ -78,7 +78,7 @@ uv run python src/tranqu_server/proto/service.py
 The `WORKERS` and `ADDRESS` environment variables can be used to override the default values defined in `config.yaml`.
 
 ```shell
-WORKERS=4 ADDRESS="localhost:52020" uv run python src/tranqu_server/proto/service.py
+WORKERS=4 ADDRESS="localhost:52020" uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 ```
 
 ## Run sample client
