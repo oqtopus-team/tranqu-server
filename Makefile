@@ -2,19 +2,40 @@ SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DEFAULT_GOAL := help
 
-.PHONY: run test format lint grpcurl-list help
+.PHONY: install run format lint test verify docs-lint docs-build docs-serve grpcurl-list help
+
+install: ## Install dependencies and configure git commit template
+	@uv sync --all-groups
+	@if [ -d .git ]; then \
+		git config --local commit.template .gitmessage; \
+	fi
 
 run: ## Run Tranqu Server
 	@WORKERS=2 ADDRESS="localhost:52020" uv run python src/tranqu_server/proto/service.py -c config/config.yaml -l config/logging.yaml
 
-test: ## Run tests
-	@uv run pytest
-
 format: ## Format code
+	@uv run ruff check --fix
 	@uv run ruff format
 
 lint: ## Lint code
+	@uv lock --check
 	@uv run ruff check
+	@uv run ruff format --check
+	@uv run mypy
+
+test: ## Run tests
+	@uv run pytest
+
+verify: format lint test ## Run all verification steps (formatting, linting, testing)
+
+docs-lint: ## Run documentation linting
+	@uv run pymarkdownlnt scan docs
+
+docs-build: ## Build documentation
+	@uv run mkdocs build
+
+docs-serve: ## Serve documentation locally
+	@uv run mkdocs serve
 
 grpcurl-list: ## List gRPC services via grpcurl
 	@grpcurl -plaintext localhost:52020 list
