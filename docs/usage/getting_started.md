@@ -48,15 +48,15 @@ This is the main configuration file for Tranqu Server.
 
 ```yaml
 proto: # Settings for Tranqu Server as a gRPC server
-  max_workers: 10 # Maximum number of workers (default: 10)
-  address: "[::]:50051" # Address and port for RPCs (default: "[::]:50051")
+  max_workers: ${WORKERS, 10} # Maximum number of workers (default: 10)
+  address: ${ADDRESS, "localhost:52020"} # Address and port for RPCs (default: localhost:52020)
 ```
 
 ### logging.yaml
 
 This is the logging configuration file for Tranqu Server.
 It is written in YAML format.
-Within Tranqu Server, it is loaded as a `dict`, and then the [logging.config.dictConfig function](https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig) is called to apply the configuration.
+Within Tranqu Server, it is loaded and applied via the `setup_logging` function from [oqtopus-util](https://github.com/oqtopus-team/oqtopus-util).
 
 If you use the default settings of `config.yaml`, the `logs` directory is required.
 
@@ -69,18 +69,16 @@ mkdir logs
 To start Tranqu Server, run the following command:
 
 ```shell
-uv run python src/tranqu_server/proto/service.py -c config/config.yaml -l config/logging.yaml
+uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 ```
 
-- `-c` or `--config`: Specifies the path to the main configuration file.
-- `-l` or `--logging`: Specifies the path to the logging configuration file.
+- `-c` or `--config`: Specifies the path to the main configuration file (default: `config/config.yaml`).
+- `-l` or `--logging`: Specifies the path to the logging configuration file (default: `config/logging.yaml`).
 
-When cloned from GitHub, the `worker` in `config.yaml` uses the environment variable `${WORKERS}`,
-and the `address` uses the environment variable `${ADDRESS}`.
-In this case, the Tranqu Server is started with the following command.
+The `WORKERS` and `ADDRESS` environment variables can be used to override the default values defined in `config.yaml`.
 
 ```shell
-WORKERS=10 ADDRESS="localhost:50051" uv run python src/tranqu_server/proto/service.py -c config/config.yaml -l config/logging.yaml
+WORKERS=10 ADDRESS="localhost:52020" uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 ```
 
 ## Run sample client
