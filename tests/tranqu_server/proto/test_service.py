@@ -4,7 +4,6 @@ import pytest
 
 from tranqu_server.proto.service import (
     TranspilerServiceImpl,
-    assign_environ,
     parse_json,
     parse_str,
 )
@@ -23,41 +22,6 @@ def test_parse_json():
     assert parse_json('{"key": "value"}') == {"key": "value"}
     with pytest.raises(json.JSONDecodeError):
         parse_json("invalid_json")
-
-
-def test_assign_environ(mocker):  # noqa: ANN001
-    # Arrange
-    def expanduser_side_effect(arg):  # noqa: ANN202, ANN001
-        if arg == "~":
-            return "/home/testuser"
-        return arg
-
-    def expandvars_side_effect(arg):  # noqa: ANN202, ANN001
-        if arg == "$MY_ENV":
-            return "dummy_env"
-        return arg
-
-    mocker.patch("os.path.expanduser", side_effect=expanduser_side_effect)
-    mocker.patch("os.path.expandvars", side_effect=expandvars_side_effect)
-    config = {
-        "key1": "~",
-        "key2": {
-            "key3": "$MY_ENV",
-            "key4": "value",
-        },
-    }
-
-    # Act
-    actual = assign_environ(config)
-
-    # Assert
-    assert actual == {
-        "key1": "/home/testuser",
-        "key2": {
-            "key3": "dummy_env",
-            "key4": "value",
-        },
-    }
 
 
 program = """OPENQASM 3.0;
