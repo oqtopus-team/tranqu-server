@@ -1,4 +1,6 @@
 site_name: "Tranqu Server"
+site_description: "Tranqu Server: A transpiler service application using Tranqu"
+repo_name: tranqu-server
 repo_url: "https://github.com/oqtopus-team/tranqu-server"
 
 nav:
@@ -29,8 +31,15 @@ theme:
     repo: fontawesome/brands/github
   features:
   - toc.follow
+  - content.code.copy
 
 markdown_extensions:
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
 - pymdownx.superfences:
     custom_fences:
     - name: mermaid
@@ -38,7 +47,6 @@ markdown_extensions:
       format: !!python/name:pymdownx.superfences.fence_code_format
 - admonition
 - footnotes
-- codehilite
 - toc:
     permalink: true
 
@@ -46,7 +54,7 @@ plugins:
 - search
 - gen-files:
     scripts:
-    - scripts/gen_ref_nav.py
+    - docs_scripts/gen_ref_nav.py
 - literate-nav:
     nav_file: API_reference.md
 - mkdocstrings:
