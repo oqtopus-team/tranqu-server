@@ -78,7 +78,7 @@ uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/log
 The `WORKERS` and `ADDRESS` environment variables can be used to override the default values defined in `config.yaml`.
 
 ```shell
-WORKERS=4 ADDRESS="localhost:52020" uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
+WORKERS=10 ADDRESS="localhost:52020" uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 ```
 
 ## Run sample client
