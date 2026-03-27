@@ -3,32 +3,31 @@
 
 ## Branch Strategy
 
-As shown in the diagram below, the feature branches (`feature/xxx`) are branched off from the `main` branch for development. The `main` branch is the release branch.
-
+As shown in the diagram below, the feature branches (`feature/xxx`) are created from the `main` branch for development. The `main` branch is the release branch.
 
 ```mermaid
 gitGraph LR:
-    commit tag:"release-v1.0.0"
-    branch feature/xxx
-    commit
-    commit
-    checkout main
-    branch feature/yyy
-    commit
-    checkout main
-    merge feature/yyy
-    checkout feature/xxx
-    commit
-    checkout main
-    merge feature/xxx
-    commit tag:"release-v1.1.0"
-    checkout main
-    branch hotfix/zzz
-    commit
-    commit
-    checkout main
-    merge hotfix/zzz
-    commit tag:"release-v1.2.0"
+  commit tag:"release-v1.0.0"
+  branch feature/xxx
+  commit
+  commit
+  checkout main
+  branch feature/yyy
+  commit
+  checkout main
+  merge feature/yyy
+  checkout feature/xxx
+  commit
+  checkout main
+  merge feature/xxx
+  commit tag:"release-v1.1.0"
+  checkout main
+  branch hotfix/zzz
+  commit
+  commit
+  checkout main
+  merge hotfix/zzz
+  commit tag:"release-v1.2.0"
 ```
 
 ### Branch Naming
@@ -41,17 +40,13 @@ While there are no strict rules, the following naming conventions are recommende
 
 ## Conventional Commits
 
-The commit messages should preferably follow the　[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) guidelines.
+Commit messages should follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
 
 ### Commit Message Format
 
-By using `.gitmessage`, a template for commit messages is provided. This template can be enabled locally for this project by configuring `git config --local`.
-
-```bash
-git config --local commit.template .gitmessage
-```
-
-Once configured, running `git commit` will display the contents of `.gitmessage` in your editor (Vim by default).
+This repository provides a `.gitmessage` template for commit messages.
+When you run `make install`, Git is automatically configured to use this template.
+After that, running `git commit` will display the template in your configured editor.
 
 ```bash
 git commit
@@ -66,14 +61,13 @@ git commit
 # └  Changes that do not affect the meaning of the code
 #    (white-space, formatting, missing semi-colons, etc)
 #refactor:
-# └  A code change that neither fixes a bug nor adds a featur
+# └  A code change that neither fixes a bug nor adds a feature
 #test:
 # └  Adding missing or correcting existing tests
 #ci:
 # └  Changes to our CI configuration files and scripts
 #chore:
 # └  Updating grunt tasks etc; no production code change
-
 ```
 
 Select the appropriate template and uncomment it, then write your commit message.
@@ -85,7 +79,7 @@ docs: Update README.md
 
 ## Correspondence between Commit Messages and Labels
 
-When creating a PR to the `main` branch, labels are automatically assigned based on the commit messages.
+When a pull request is opened, labels are automatically assigned based on the commit message prefix.
 Below is the correspondence between prefixes and labels:
 
 | Prefix | Label | Description |

@@ -33,7 +33,7 @@ The current version supports a gRPC server, and we plan to include RESTful API s
 
 ## Developer Guidelines
 
-- [Development Flow](./developer_guidelines/index.md)
+- [Development Flow](./developer_guidelines/development_flow.md)
 - [Setup Development Environment](./developer_guidelines/setup.md)
 - [How to Contribute](./CONTRIBUTING.md)
 - [Code of Conduct](https://oqtopus-team.github.io/code-of-conduct/)
