@@ -116,7 +116,7 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
                     "status": response.status,
                 },
             )
-            return response  # noqa: B012
+        return response
 
 
 def parse_str(raw_str: str) -> str | None:
