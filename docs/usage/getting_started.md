@@ -58,12 +58,6 @@ This is the logging configuration file for Tranqu Server.
 It is written in YAML format.
 Within Tranqu Server, it is loaded and applied via the `setup_logging` function from [oqtopus-util](https://github.com/oqtopus-team/oqtopus-util).
 
-If you use the default settings of `config.yaml`, the `logs` directory is required.
-
-```shell
-mkdir logs
-```
-
 ## Start Tranqu Server
 
 To start Tranqu Server, run the following command:
@@ -91,7 +85,7 @@ uv run python tests/tranqu_server/proto/sample_client.py
 
 ## Example
 
-You can check Tranqu Server's with grpcurl:
+You can check Tranqu Server's with `grpcurl`:
 
 ### Install grpcurl
 
@@ -100,21 +94,35 @@ See the [grpcurl repository](https://github.com/fullstorydev/grpcurl)
 ### List services
 
 ```shell
-grpcurl -plaintext [::]:50051 list
+grpcurl -plaintext localhost:52020 list
+```
+
+Alternatively, you can use the shortcut defined in the Makefile:
+
+```shell
+make grpcurl-list 
 ```
 
 ### Check supported methods
 
 ```shell
-grpcurl -plaintext "[::]:50051" list tranqu_server.proto.v1.TranspilerService
+grpcurl -plaintext "localhost:52020" list tranqu_server.proto.v1.TranspilerService
 ```
 
 ### Request to transpile
 
+To send a transpile request with a sample OpenQASM 3.0 program:
+
 ```shell
 grpcurl -plaintext -d '{
-  "program": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[2] q;\n\nh q[0];\ncx q[0], q[1];\n",
+  "program": "OPENQASM 3.0; include \"stdgates.inc\"; qubit[2] q; h q[0]; cx q[0], q[1];\n",
   "program_lib": "openqasm3",
   "transpiler_lib": "qiskit"
-}' "[::]:50051" tranqu_server.proto.v1.TranspilerService.Transpile
+}' "localhost:52020" tranqu_server.proto.v1.TranspilerService.Transpile
+```
+
+You can also run this pre-defined test command via `make`:
+
+```shell
+make grpcurl-test 
 ```
