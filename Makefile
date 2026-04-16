@@ -13,11 +13,11 @@ install: ## Install dependencies and configure git commit template
 run: ## Run Tranqu Server
 	@uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 
-format: ## Format code
+format: ## Run code formatting
 	@uv run ruff check --fix
 	@uv run ruff format
 
-lint: ## Lint code
+lint: ## Run linting
 	@uv lock --check
 	@uv run ruff check
 	@uv run ruff format --check
@@ -44,7 +44,7 @@ grpcurl-test: ## Run a transpile test using grpcurl
 	@grpcurl -plaintext -d '{"program": "OPENQASM 3.0; include \"stdgates.inc\"; qubit[2] q; h q[0]; cx q[0], q[1];", "program_lib": "openqasm3", "transpiler_lib": "qiskit"}' \
 		"localhost:52020" tranqu_server.proto.v1.TranspilerService.Transpile
 
-help: ## Show this help message
+help: ## Show help message
 	@echo "Usage: make [target]"
 	@echo ""
 	@echo "Available targets:"

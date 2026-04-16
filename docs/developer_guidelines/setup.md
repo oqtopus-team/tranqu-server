@@ -33,6 +33,7 @@ tranqu-server/
 ├─ config/        # Example configuration files
 ├─ spec/          # Protobuf definitions
 ├─ logs/          # Log output directory
+├─ .vscode/       # VSCode settings
 ├─ .github/       # GitHub workflows and repository settings
 ├─ pyproject.toml # Project configuration and dependencies
 ├─ Makefile       # Development commands

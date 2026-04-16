@@ -25,12 +25,20 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
+          version: "0.10.9"
           enable-cache: true
           cache-dependency-glob: "**/uv.lock"
           cache-python: true
 
       - name: Set up Python
         run: uv python install
+
+      - name: Show uv and python info
+        run: |
+          uv --version
+          cat .uv-version
+          uv run python --version
+          cat .python-version
 
       - name: Install dependencies
         run: uv sync --frozen --all-groups
@@ -42,7 +50,7 @@ jobs:
           uv run ruff format --check .
 
       - name: Type check
-        run: uv run mypy
+        run: uv run mypy src tests
 
       - name: Detect changed docs files
         id: changes
@@ -54,7 +62,7 @@ jobs:
 
       - name: Documentation Lint
         if: steps.changes.outputs.docs == 'true'
-        run: uv run pymarkdownlnt scan docs
+        run: uv run pymarkdown scan docs
 
   test:
     runs-on: ubuntu-latest
@@ -89,7 +97,5 @@ jobs:
         if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
         with:
-          files: ./coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: oqtopus-team/tranqu-server
-
+          fail_ci_if_error: true
