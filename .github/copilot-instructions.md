@@ -17,18 +17,11 @@ tranqu-server/
 │   └── proto/
 │       ├── service.py          # gRPC servicer implementation (hand-written)
 │       └── v1/                 # Generated Protobuf Python code (DO NOT edit)
-│           ├── tranqu_pb2.py
-│           └── tranqu_pb2_grpc.py
 ├── tests/tranqu_server/        # Mirrors src/ layout
-│   └── proto/
-│       ├── test_service.py     # pytest tests for service.py
-│       └── sample_client.py    # Manual gRPC test client
-├── spec/proto/tranqu_server/   # Protobuf source definitions
-│   └── proto/                  # *.proto files
-├── spec/proto/Makefile         # `make all` → buf lint + buf generate
-├── config/
-│   ├── config.yaml             # Server config (supports ${ENV_VAR, default} syntax)
-│   └── logging.yaml            # JSON structured logging config
+│   └── proto/                  # pytest tests and manual gRPC client
+├── spec/proto/                 # Protobuf source definitions and Buf config
+│   └── tranqu_server/proto/    # *.proto files
+├── config/                     # Server and logging YAML config files
 ├── docs/                       # MkDocs documentation sources
 ├── pyproject.toml              # Project metadata, deps, ruff/mypy/pytest config
 ├── Makefile                    # Developer shortcuts (see below)
@@ -128,3 +121,9 @@ CI runs automatically on PRs to `main`: ruff lint/format, mypy type check, and p
 - `status=0` means success, `status=1` means error in `TranspileResponse`
 - Documentation linting (`pymarkdownlnt`) only runs in CI when `docs/**` files change
 - `make install` also configures the `.gitmessage` git commit template locally
+
+## Commit and PR conventions
+- Use Conventional Commits style for all commit messages.
+- Follow the commit message instructions in `.github/instructions/commit-message.instructions.md`.
+- Follow the Pull Request title and description instructions in `.github/instructions/pull-request-description.instructions.md`.
+- When creating a Pull Request, follow the sections defined in `.github/pull_request_template.md`.
