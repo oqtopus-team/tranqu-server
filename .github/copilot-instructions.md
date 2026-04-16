@@ -66,7 +66,7 @@ uv run pytest                                    # test
 - **Type checker**: [mypy](https://mypy.readthedocs.io/)
 - **Exclusions**: `src/**/v1/**/*.py` (generated Protobuf code) is excluded from both ruff and mypy — never edit those files
 - `tests/**` ignores several ruff rules (e.g., `S101` for `assert`, `PLR2004` for magic values, `ANN*` for annotations)
-- Docstrings: use Google style (D203/D213 are disabled; D203 and D213 are the non-default variants)
+- Docstrings: follow Google style — `D203` (one-blank-line-before-class) and `D213` (multi-line-summary-second-line) are both **ignored**, meaning `D211` (no-blank-line-before-class) and `D212` (multi-line-summary-first-line) are enforced
 
 ## Protobuf / gRPC Workflow
 
