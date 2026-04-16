@@ -35,10 +35,10 @@ jobs:
 
       - name: Show uv and python info
         run: |
-          echo "uv version: ${{ steps.setup-uv.outputs.uv-version }}"
-          echo "uv cache hit: ${{ steps.setup-uv.outputs.cache-hit }}"
-          echo "python version: ${{ steps.setup-uv.outputs.python-version }}"
-          echo "python cache hit: ${{ steps.setup-uv.outputs.python-cache-hit }}"
+          uv --version
+          cat .uv-version
+          uv run python --version
+          cat .python-version
 
       - name: Install dependencies
         run: uv sync --frozen --all-groups
