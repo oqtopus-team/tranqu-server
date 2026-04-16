@@ -7,7 +7,7 @@ license = "Apache-2.0"
 authors = [{ name = "oqtopus-team", email = "oqtopus-team@googlegroups.com" }]
 keywords = []
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: Apache Software License",
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
@@ -115,5 +115,7 @@ pythonpath = ["src"]
 testpaths = ["tests"]
 
 [tool.pymarkdown]
-plugins.line-length.enabled = false # MD013: Disable line length limit
-plugins.first-line-heading.enabled = false # MD041: Allow files to start without a top-level heading
+plugins.line-length.enabled = false            # MD013: Disable line length limit
+plugins.first-line-heading.enabled = false     # MD041: Allow files to start without a top-level heading
+plugins.code-block-style.enabled = false       # MD046: Disable code block style consistency
+plugins.reference-links-images.enabled = false # MD060: Allow inconsistent reference link styles
