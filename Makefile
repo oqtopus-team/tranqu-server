@@ -11,7 +11,7 @@ install: ## Install dependencies and configure git commit template
 	fi
 
 run: ## Run Tranqu Server
-	@uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
+	@TRANQU_WORKERS=10 TRANQU_ADDRESS="localhost:51020" uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 
 format: ## Run code formatting
 	@uv run ruff check --fix
@@ -38,11 +38,11 @@ docs-serve: ## Serve documentation locally
 	@uv run mkdocs serve
 
 grpcurl-list: ## List gRPC services via grpcurl
-	@grpcurl -plaintext localhost:52020 list
+	@grpcurl -plaintext localhost:51020 list
 
 grpcurl-test: ## Run a transpile test using grpcurl
 	@grpcurl -plaintext -d '{"program": "OPENQASM 3.0; include \"stdgates.inc\"; qubit[2] q; h q[0]; cx q[0], q[1];", "program_lib": "openqasm3", "transpiler_lib": "qiskit"}' \
-		"localhost:52020" tranqu_server.proto.v1.TranspilerService.Transpile
+		"localhost:51020" tranqu_server.proto.v1.TranspilerService.Transpile
 
 help: ## Show help message
 	@echo "Usage: make [target]"
