@@ -47,9 +47,9 @@ Tranqu Server uses two configuration files:
 This is the main configuration file for Tranqu Server.
 
 ```yaml
-proto: # Settings for Tranqu Server as a gRPC server
-  max_workers: ${WORKERS, 10} # Maximum number of workers (default: 10)
-  address: ${ADDRESS, "localhost:52020"} # Address and port for RPCs (default: localhost:52020)
+proto: # Settings for gRPC server
+  max_workers: ${TRANQU_WORKERS, 10} # Maximum number of workers
+  address: ${TRANQU_ADDRESS, "localhost:51020"} # Address and port for RPCs
 ```
 
 ### logging.yaml
@@ -72,7 +72,7 @@ uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/log
 The `WORKERS` and `ADDRESS` environment variables can be used to override the default values defined in `config.yaml`.
 
 ```shell
-WORKERS=10 ADDRESS="localhost:52020" uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
+TRANQU_WORKERS=10 TRANQU_ADDRESS="localhost:51020" uv run python -m tranqu_server.proto.service -c config/config.yaml -l config/logging.yaml
 ```
 
 ## Run sample client
@@ -94,7 +94,7 @@ See the [grpcurl repository](https://github.com/fullstorydev/grpcurl)
 ### List services
 
 ```shell
-grpcurl -plaintext localhost:52020 list
+grpcurl -plaintext localhost:51020 list
 ```
 
 Alternatively, you can use the shortcut defined in the Makefile:
@@ -106,7 +106,7 @@ make grpcurl-list
 ### Check supported methods
 
 ```shell
-grpcurl -plaintext "localhost:52020" list tranqu_server.proto.v1.TranspilerService
+grpcurl -plaintext "localhost:51020" list tranqu_server.proto.v1.TranspilerService
 ```
 
 ### Request to transpile
@@ -118,7 +118,7 @@ grpcurl -plaintext -d '{
   "program": "OPENQASM 3.0; include \"stdgates.inc\"; qubit[2] q; h q[0]; cx q[0], q[1];\n",
   "program_lib": "openqasm3",
   "transpiler_lib": "qiskit"
-}' "localhost:52020" tranqu_server.proto.v1.TranspilerService.Transpile
+}' "localhost:51020" tranqu_server.proto.v1.TranspilerService.Transpile
 ```
 
 You can also run this pre-defined test command via `make`:
