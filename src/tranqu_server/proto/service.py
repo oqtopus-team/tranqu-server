@@ -1,5 +1,4 @@
 import argparse
-import inspect
 import json
 import logging
 import threading
@@ -204,22 +203,15 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
     max_workers = int(config_yaml["proto"].get("max_workers") or 10)
     address = str(config_yaml["proto"].get("address") or "localhost:51020")
 
-    grpc_config = {
-        key.removeprefix("grpc."): value
+    grpc_options = [
+        (key, value)
         for key, value in config_yaml["proto"].items()
         if key.startswith("grpc.")
-    }
-    grpc_options = [(f"grpc.{key}", value) for key, value in grpc_config.items()]
-
-    # Compatibility bridge for oqtopus-util API differences:
-    # - old API expects grpc_config (mapping)
-    # - new API expects grpc_options (sequence)
-    second_param = list(inspect.signature(create_server).parameters.values())[1].name
-    create_server_arg = grpc_config if second_param == "grpc_config" else grpc_options
+    ]
 
     server = create_server(
         futures.ThreadPoolExecutor(max_workers),
-        create_server_arg,
+        options=grpc_options,
     )
     tranqu_pb2_grpc.add_TranspilerServiceServicer_to_server(
         TranspilerServiceImpl(), server
