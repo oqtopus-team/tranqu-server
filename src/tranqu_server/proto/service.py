@@ -9,7 +9,7 @@ from typing import Any
 import grpc  # type: ignore[import-untyped]
 from grpc_reflection.v1alpha import reflection  # type: ignore[import-untyped]
 from oqtopus_util.config import load_config, setup_logging
-from oqtopus_util.grpc import create_server
+from oqtopus_util.grpc import create_server, load_grpc_options
 from tranqu import Tranqu  # type: ignore[import-untyped]
 
 from tranqu_server.proto.v1 import tranqu_pb2, tranqu_pb2_grpc
@@ -203,11 +203,7 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
     max_workers = int(config_yaml["proto"].get("max_workers") or 10)
     address = str(config_yaml["proto"].get("address") or "localhost:51020")
 
-    grpc_options = [
-        (key, value)
-        for key, value in config_yaml["proto"].items()
-        if key.startswith("grpc.")
-    ]
+    grpc_options = load_grpc_options(config_yaml["proto"])
 
     server = create_server(
         futures.ThreadPoolExecutor(max_workers),
