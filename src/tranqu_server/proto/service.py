@@ -205,7 +205,11 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
 
     server = create_server(
         futures.ThreadPoolExecutor(max_workers),
-        config_yaml["proto"],
+        [
+            (key, value)
+            for key, value in config_yaml["proto"].items()
+            if key.startswith("grpc.")
+        ],
     )
     tranqu_pb2_grpc.add_TranspilerServiceServicer_to_server(
         TranspilerServiceImpl(), server
