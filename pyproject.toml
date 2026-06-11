@@ -22,7 +22,7 @@ requires-python = ">=3.12"
 dependencies = [
   "grpcio-reflection>=1.68.1",
   "grpcio>=1.68.1",
-  "oqtopus-util>=1.0.2",
+  "oqtopus-util>=1.0.1",
   "protobuf>=5.29.1",
   "python-json-logger>=3.2.1",
   "tranqu>=1.0.0",
@@ -31,9 +31,6 @@ dependencies = [
 [project.urls]
 documentation = "https://tranqu-server.readthedocs.io/"
 repository = "https://github.com/oqtopus-team/tranqu-server"
-
-[tool.uv.sources]
-oqtopus-util = { git = "https://github.com/oqtopus-team/oqtopus-util.git", branch = "feature/grpc-message-size-config" }
 
 [dependency-groups]
 dev = [
