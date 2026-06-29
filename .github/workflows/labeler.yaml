@@ -4,7 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize]
     branches:
+      # Specify the default branch of your repository (e.g., main or develop)
       - main
+      # - develop
 
 #Permissions are required for PRs by dependabot.
 permissions:
@@ -75,6 +77,9 @@ jobs:
           labels: ${{ steps.set-labels.outputs.labels }}
 
       - name: Assign PR creator
+        if: >-
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.user.login != 'dependabot[bot]'
         uses: actions/github-script@v9
         with:
           script: |
@@ -82,5 +87,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              assignees: [context.actor]
+              assignees: [context.payload.pull_request.user.login]
             })

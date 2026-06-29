@@ -216,9 +216,12 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
     setup_observability()
 
     max_workers = int(config_yaml["proto"].get("max_workers") or 10)
-    address = str(config_yaml["proto"].get("address") or "localhost:52020")
+    address = str(config_yaml["proto"].get("address") or "localhost:51020")
 
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers))
+    server = grpc.server(
+        futures.ThreadPoolExecutor(max_workers),
+        options=config_yaml["proto"]["grpc_options"],
+    )
     tranqu_pb2_grpc.add_TranspilerServiceServicer_to_server(
         TranspilerServiceImpl(), server
     )
