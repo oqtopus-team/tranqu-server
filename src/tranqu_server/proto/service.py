@@ -109,9 +109,7 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
                 # stats has "before"/"after" phases of circuit metrics
                 for phase, metrics in stats.items():
                     for key, value in metrics.items():
-                        span.set_attribute(
-                            f"tranqu_server.stats.{phase}.{key}", value
-                        )
+                        span.set_attribute(f"tranqu_server.stats.{phase}.{key}", value)
                 span.set_attribute("tranqu_server.transpile.status", "succeeded")
             except:  # noqa: E722
                 logger.exception(
