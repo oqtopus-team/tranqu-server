@@ -63,11 +63,12 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
                 "tranqu_server.request_id": request.request_id,
                 "tranqu_server.program_lib": request.program_lib or "",
                 "tranqu_server.transpiler_lib": request.transpiler_lib or "",
+                "tranqu_server.transpiler_options": request.transpiler_options or "",
                 "tranqu_server.device_lib": request.device_lib or "",
             },
         ) as span:
             try:
-                start_time = time.time()
+                start_time = time.perf_counter()
                 request_id = request.request_id
                 logger.info("Transpile is started.", extra={"request_id": request_id})
                 logger.debug(
@@ -95,25 +96,33 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
                         device_lib=parse_str(request.device_lib),
                     )
 
+                result_dict = result.to_dict()
+                stats = result_dict["stats"]
                 response = tranqu_pb2.TranspileResponse(  # type: ignore[attr-defined]
                     status=0,
                     transpiled_program=result.transpiled_program,
-                    stats=json.dumps(result.to_dict()["stats"]),
+                    stats=json.dumps(stats),
                     virtual_physical_mapping=json.dumps(
-                        result.to_dict()["virtual_physical_mapping"]
+                        result_dict["virtual_physical_mapping"]
                     ),
                 )
-                span.set_attribute("tranqu_server.status", "success")
+                # stats has "before"/"after" phases of circuit metrics
+                for phase, metrics in stats.items():
+                    for key, value in metrics.items():
+                        span.set_attribute(
+                            f"tranqu_server.stats.{phase}.{key}", value
+                        )
+                span.set_attribute("tranqu_server.transpile.status", "succeeded")
             except:  # noqa: E722
                 logger.exception(
                     "Transpile failed. Exception occurred.",
                     extra={"request_id": request_id},
                 )
                 response = tranqu_pb2.TranspileResponse(status=1)  # type: ignore[attr-defined]
-                span.set_attribute("tranqu_server.status", "failure")
+                span.set_attribute("tranqu_server.transpile.status", "failed")
                 span.set_status(trace.StatusCode.ERROR, "transpile failed")
             finally:
-                elapsed_time = time.time() - start_time
+                elapsed_time = time.perf_counter() - start_time
                 logger.debug(
                     "return parameters",
                     extra={
@@ -214,7 +223,7 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
     logging_yaml = load_config(logging_yaml_path)
     setup_logging(logging_yaml)
 
-    setup_observability()
+    setup_observability(config_yaml)
 
     max_workers = int(config_yaml["proto"].get("max_workers") or 10)
     address = str(config_yaml["proto"].get("address") or "localhost:51020")
