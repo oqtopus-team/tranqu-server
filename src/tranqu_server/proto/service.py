@@ -8,12 +8,15 @@ from typing import Any
 
 import grpc  # type: ignore[import-untyped]
 from grpc_reflection.v1alpha import reflection  # type: ignore[import-untyped]
+from opentelemetry import trace
 from oqtopus_util.config import load_config, setup_logging
 from tranqu import Tranqu  # type: ignore[import-untyped]
 
+from tranqu_server.observability import setup_observability
 from tranqu_server.proto.v1 import tranqu_pb2, tranqu_pb2_grpc
 
 logger = logging.getLogger("tranqu_server")
+tracer = trace.get_tracer("tranqu_server")
 _transpiler_lock = threading.Lock()
 
 
@@ -54,68 +57,91 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
                 occurred.
 
         """
-        try:
-            start_time = time.time()
-            request_id = request.request_id
-            logger.info("Transpile is started.", extra={"request_id": request_id})
-            logger.debug(
-                "received parameters",
-                extra={
-                    "request_id": request_id,
-                    "program": request.program,
-                    "program_lib": request.program_lib,
-                    "transpiler_lib": request.transpiler_lib,
-                    "transpiler_options": request.transpiler_options,
-                    "device": request.device,
-                    "device_lib": request.device_lib,
-                },
-            )
-
-            # call Tranqu
-            with _transpiler_lock:
-                # Ensure that only one transpilation occurs at a time
-                result = self._tranqu.transpile(
-                    program=parse_str(request.program),
-                    program_lib=parse_str(request.program_lib),
-                    transpiler_lib=parse_str(request.transpiler_lib),
-                    transpiler_options=parse_json(request.transpiler_options),
-                    device=parse_json(request.device),
-                    device_lib=parse_str(request.device_lib),
+        with tracer.start_as_current_span(
+            "tranqu_server.Transpile",
+            attributes={
+                "tranqu_server.request_id": request.request_id,
+                "tranqu_server.program_lib": request.program_lib or "",
+                "tranqu_server.transpiler_lib": request.transpiler_lib or "",
+                "tranqu_server.transpiler_options": request.transpiler_options or "",
+                "tranqu_server.device_lib": request.device_lib or "",
+            },
+        ) as span:
+            try:
+                start_time = time.perf_counter()
+                request_id = request.request_id
+                logger.info("Transpile is started.", extra={"request_id": request_id})
+                logger.debug(
+                    "received parameters",
+                    extra={
+                        "request_id": request_id,
+                        "program": request.program,
+                        "program_lib": request.program_lib,
+                        "transpiler_lib": request.transpiler_lib,
+                        "transpiler_options": request.transpiler_options,
+                        "device": request.device,
+                        "device_lib": request.device_lib,
+                    },
                 )
 
-            response = tranqu_pb2.TranspileResponse(  # type: ignore[attr-defined]
-                status=0,
-                transpiled_program=result.transpiled_program,
-                stats=json.dumps(result.to_dict()["stats"]),
-                virtual_physical_mapping=json.dumps(
-                    result.to_dict()["virtual_physical_mapping"]
-                ),
-            )
-        except:  # noqa: E722
-            logger.exception(
-                "Transpile failed. Exception occurred.",
-                extra={"request_id": request_id},
-            )
-            response = tranqu_pb2.TranspileResponse(status=1)  # type: ignore[attr-defined]
-        finally:
-            elapsed_time = time.time() - start_time
-            logger.debug(
-                "return parameters",
-                extra={
-                    "request_id": request_id,
-                    "transpiled_program": response.transpiled_program,
-                    "stats": response.stats,
-                    "virtual_physical_mapping": response.virtual_physical_mapping,
-                },
-            )
-            logger.info(
-                "Transpile is finished.",
-                extra={
-                    "request_id": request_id,
-                    "elapsed_time": elapsed_time,
-                    "status": response.status,
-                },
-            )
+                # call Tranqu
+                with _transpiler_lock:
+                    # Ensure that only one transpilation occurs at a time
+                    result = self._tranqu.transpile(
+                        program=parse_str(request.program),
+                        program_lib=parse_str(request.program_lib),
+                        transpiler_lib=parse_str(request.transpiler_lib),
+                        transpiler_options=parse_json(request.transpiler_options),
+                        device=parse_json(request.device),
+                        device_lib=parse_str(request.device_lib),
+                    )
+
+                result_dict = result.to_dict()
+                stats = result_dict["stats"]
+                response = tranqu_pb2.TranspileResponse(  # type: ignore[attr-defined]
+                    status=0,
+                    transpiled_program=result.transpiled_program,
+                    stats=json.dumps(stats),
+                    virtual_physical_mapping=json.dumps(
+                        result_dict["virtual_physical_mapping"]
+                    ),
+                )
+                if span.is_recording():
+                    # stats has "before"/"after" phases of circuit metrics
+                    for phase, metrics in stats.items():
+                        for key, value in metrics.items():
+                            span.set_attribute(
+                                f"tranqu_server.stats.{phase}.{key}", value
+                            )
+                    span.set_attribute("tranqu_server.transpile.status", "succeeded")
+            except BaseException as e:
+                logger.exception(
+                    "Transpile failed. Exception occurred.",
+                    extra={"request_id": request_id},
+                )
+                response = tranqu_pb2.TranspileResponse(status=1)  # type: ignore[attr-defined]
+                if span.is_recording():
+                    span.set_attribute("tranqu_server.transpile.status", "failed")
+                    span.set_status(trace.StatusCode.ERROR, str(e))
+            finally:
+                elapsed_time = time.perf_counter() - start_time
+                logger.debug(
+                    "return parameters",
+                    extra={
+                        "request_id": request_id,
+                        "transpiled_program": response.transpiled_program,
+                        "stats": response.stats,
+                        "virtual_physical_mapping": response.virtual_physical_mapping,
+                    },
+                )
+                logger.info(
+                    "Transpile is finished.",
+                    extra={
+                        "request_id": request_id,
+                        "elapsed_time": elapsed_time,
+                        "status": response.status,
+                    },
+                )
         return response
 
 
@@ -198,6 +224,8 @@ def serve(config_yaml_path: str, logging_yaml_path: str) -> None:
     config_yaml = load_config(config_yaml_path)
     logging_yaml = load_config(logging_yaml_path)
     setup_logging(logging_yaml)
+
+    setup_observability(config_yaml)
 
     max_workers = int(config_yaml["proto"].get("max_workers") or 10)
     address = str(config_yaml["proto"].get("address") or "localhost:51020")
