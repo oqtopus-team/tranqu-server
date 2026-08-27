@@ -122,7 +122,7 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
                 response = tranqu_pb2.TranspileResponse(status=1)  # type: ignore[attr-defined]
                 if span.is_recording():
                     span.set_attribute("tranqu_server.transpile.status", "failed")
-                span.set_status(trace.StatusCode.ERROR, str(e))
+                    span.set_status(trace.StatusCode.ERROR, str(e))
             finally:
                 elapsed_time = time.perf_counter() - start_time
                 logger.debug(
