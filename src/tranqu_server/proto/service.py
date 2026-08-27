@@ -16,7 +16,7 @@ from tranqu_server.observability import setup_observability
 from tranqu_server.proto.v1 import tranqu_pb2, tranqu_pb2_grpc
 
 logger = logging.getLogger("tranqu_server")
-tracer = trace.get_tracer(__name__)
+tracer = trace.get_tracer("tranqu_server")
 _transpiler_lock = threading.Lock()
 
 
@@ -58,7 +58,7 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
 
         """
         with tracer.start_as_current_span(
-            "tranqu_server.transpile",
+            "tranqu_server.Transpile",
             attributes={
                 "tranqu_server.request_id": request.request_id,
                 "tranqu_server.program_lib": request.program_lib or "",
@@ -106,19 +106,23 @@ class TranspilerServiceImpl(tranqu_pb2_grpc.TranspilerServiceServicer):
                         result_dict["virtual_physical_mapping"]
                     ),
                 )
-                # stats has "before"/"after" phases of circuit metrics
-                for phase, metrics in stats.items():
-                    for key, value in metrics.items():
-                        span.set_attribute(f"tranqu_server.stats.{phase}.{key}", value)
-                span.set_attribute("tranqu_server.transpile.status", "succeeded")
-            except:  # noqa: E722
+                if span.is_recording():
+                    # stats has "before"/"after" phases of circuit metrics
+                    for phase, metrics in stats.items():
+                        for key, value in metrics.items():
+                            span.set_attribute(
+                                f"tranqu_server.stats.{phase}.{key}", value
+                            )
+                    span.set_attribute("tranqu_server.transpile.status", "succeeded")
+            except BaseException as e:
                 logger.exception(
                     "Transpile failed. Exception occurred.",
                     extra={"request_id": request_id},
                 )
                 response = tranqu_pb2.TranspileResponse(status=1)  # type: ignore[attr-defined]
-                span.set_attribute("tranqu_server.transpile.status", "failed")
-                span.set_status(trace.StatusCode.ERROR, "transpile failed")
+                if span.is_recording():
+                    span.set_attribute("tranqu_server.transpile.status", "failed")
+                span.set_status(trace.StatusCode.ERROR, str(e))
             finally:
                 elapsed_time = time.perf_counter() - start_time
                 logger.debug(
